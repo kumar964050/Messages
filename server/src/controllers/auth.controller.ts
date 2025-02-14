@@ -3,7 +3,11 @@ import { Request as Req, Response as Res, NextFunction as Next } from "express";
 import CatchAsync from "../utils/CatchAsync";
 import CustomError from "../utils/CustomError";
 import UserModel from "../models/user.model";
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../constants/messages";
+import {
+  EMAIL_MESSAGES,
+  ERROR_MESSAGES,
+  SUCCESS_MESSAGES,
+} from "../constants/messages";
 import EmailService from "../services/EmailService";
 
 // email service
@@ -14,16 +18,25 @@ export const signup = CatchAsync(async (req: Req, res: Res, next: Next) => {
   const email = req.body?.email?.toLowerCase() ?? "";
   // checking email is already exist
   const findUser = await UserModel.findOne({ email });
-  if (findUser) {
+  if (findUser && findUser.is_active) {
     return next(new CustomError(ERROR_MESSAGES.ALREADY_USER_EXIST, 400));
   }
 
-  // creating a new user
-  const newUser = await UserModel.create(req.body);
-  // send confirmation email along with verification LINK
-  await emailServices.sendWelcomeEmail(newUser.email, newUser.name);
+  let user = findUser;
 
-  const { password, ...userWithOutPassword } = newUser.toObject();
+  if (findUser && !findUser.is_active) {
+    findUser.is_active = true;
+    findUser.password = req.body.password;
+    user = await findUser.save({ validateBeforeSave: false });
+  } else {
+    user = findUser ?? (await UserModel.create(req.body));
+  }
+
+  // creating a new user
+  // send confirmation email along with verification LINK
+  await emailServices.sendWelcomeEmail(user.email, user.name);
+
+  const { password, ...userWithOutPassword } = user.toObject();
 
   res.status(201).json({
     status: "success",
@@ -36,9 +49,16 @@ export const login = CatchAsync(async (req: Req, res: Res, next: Next) => {
   // email or username
   const identifier = req.body?.identifier?.toLowerCase();
 
+  if (!identifier || !req.body.password) {
+    return next(new CustomError(ERROR_MESSAGES.INVALID_CREDENTIALS, 401));
+  }
+
   // get user details
   const findUser = await UserModel.findOne({
-    $or: [{ username: identifier }, { email: identifier }],
+    $and: [
+      { $or: [{ username: identifier }, { email: identifier }] },
+      { is_active: true },
+    ],
   }).select(
     "+password +temporary_password.password +temporary_password.expiry"
   );
@@ -72,7 +92,10 @@ export const forgotPassword = CatchAsync(
 
     // Find user by email or username
     const user = await UserModel.findOne({
-      $or: [{ username: identifier }, { email: identifier }],
+      $and: [
+        { $or: [{ username: identifier }, { email: identifier }] },
+        { is_active: true },
+      ],
     });
 
     if (!user) {
@@ -87,3 +110,14 @@ export const forgotPassword = CatchAsync(
     res.json({ status: "success", message: ERROR_MESSAGES.TEMP_PASSWORD_SENT });
   }
 );
+
+// // set temp password for login
+// export const AccountVerification = CatchAsync(
+//   async (req: Req, res: Res, next: Next) => {
+//     // extract id from token
+//     // get details by id
+//     // change the status of is_verified
+//     // send res
+//     // res.json({ status: "success", message:  });
+//   }
+// );

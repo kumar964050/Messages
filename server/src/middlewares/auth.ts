@@ -23,7 +23,7 @@ const authMiddleware = CatchAsync(
     const decoded: any = jwt.verify(token, JWT_SECRET_KEY);
 
     // find user by id
-    const user = await User.findById(decoded.id);
+    const user = await User.findOne({ _id: decoded.id, is_active: true });
     if (!user) return next(new CustomError(ERROR_MESSAGES.USER_NOT_FOUND, 404));
 
     req.user = user;

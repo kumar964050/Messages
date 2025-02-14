@@ -1,6 +1,7 @@
 export const ERROR_MESSAGES = {
   // Authentication
   ALREADY_USER_EXIST: "This email already exists.",
+  ALREADY_USERNAME_EXIST: "This username not available.",
   INVALID_CREDENTIALS: "Invalid email or password.",
   UNAUTHORIZED_ACCESS: "You are not authorized to access this resource.",
   USER_NOT_FOUND: "User not found.",
@@ -48,6 +49,21 @@ export const EMAIL_MESSAGES = {
   WELCOME_SUBJECT: "Welcome to Our Service!",
   WELCOME_BODY: (name: string) =>
     `<h1>Hello ${name},</h1><p>Welcome! We're excited to have you on board.</p>`,
+  UPDATE_PASSWORD_SUBJECT: "Password Successfully Updated",
+  UPDATE_PASSWORD_BODY: () => `
+    <p>Your password has been updated successfully.</p>
+    <p>If you didn't make this change, please contact support immediately.</p>
+  `,
+  UPDATE_USERNAME_SUBJECT: "Username Successfully Changed",
+  UPDATE_USERNAME_BODY: (newUsername: string) => `
+    <p>Your username has been changed to <strong>${newUsername}</strong>.</p>
+    <p>If you did not request this change, please contact support.</p>
+  `,
+  ACCOUNT_DELETION_SUBJECT: "Account Deletion Confirmation",
+  ACCOUNT_DELETION_BODY: () => `
+    <p>Your account has been successfully deleted.</p>
+    <p>We're sorry to see you go. If this was a mistake, contact support.</p>
+  `,
 
   TEMPORARY_PASSWORD_SUBJECT: "Your Temporary Password for Login",
   TEMPORARY_PASSWORD_BODY: (tempPassword: string) => `

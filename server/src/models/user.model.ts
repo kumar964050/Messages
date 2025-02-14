@@ -7,12 +7,15 @@ import { ROLES_ENUMS } from "../constants/enums";
 
 export interface IUser extends Document {
   name: string;
+  age: number;
+  gender: string;
   username?: string;
   email: string;
   password: string;
-  is_verified: boolean;
   role: string;
   temporary_password: { password: string | null; expiry: Date | null };
+  is_verified: boolean;
+  is_active: boolean;
   comparePassword(
     candidatePassword: string
   ): Promise<{ isTempPassword: boolean; comparedPassword: boolean }>;
@@ -27,6 +30,8 @@ function generateUsername(): string {
 const userSchema: Schema = new Schema(
   {
     name: { type: String, trim: true, default: "user" },
+    age: { type: Number, default: 18 },
+    gender: { type: String, enum: ["MALE", "FEMALE"] },
     username: {
       type: String,
       unique: true,
@@ -42,6 +47,7 @@ const userSchema: Schema = new Schema(
     },
     password: { type: String, required: true, select: false },
     is_verified: { type: Boolean, default: false },
+    is_active: { type: Boolean, default: true },
     role: { type: String, enum: ROLES_ENUMS, default: ROLES_ENUMS[0] },
     temporary_password: {
       password: { type: String, select: false },

@@ -57,6 +57,33 @@ class EmailService {
     const html = EMAIL_MESSAGES.TEMPORARY_PASSWORD_BODY(tempPassword);
     await this.sendEmail({ to, subject, html });
   }
+
+  // send password update mail
+  async sendUpdatePasswordEmail(to: string): Promise<void> {
+    await this.sendEmail({
+      to,
+      subject: EMAIL_MESSAGES.UPDATE_PASSWORD_SUBJECT,
+      html: EMAIL_MESSAGES.UPDATE_PASSWORD_BODY(),
+    });
+  }
+
+  // Update Username Confirmation
+  async sendUpdateUsernameEmail(to: string, username: string): Promise<void> {
+    await this.sendEmail({
+      to,
+      subject: EMAIL_MESSAGES.UPDATE_USERNAME_SUBJECT,
+      html: EMAIL_MESSAGES.UPDATE_USERNAME_BODY(username),
+    });
+  }
+
+  // Account Deletion Confirmation
+  async sendAccountDeletionEmail(to: string): Promise<void> {
+    await this.sendEmail({
+      to,
+      subject: EMAIL_MESSAGES.ACCOUNT_DELETION_SUBJECT,
+      html: EMAIL_MESSAGES.ACCOUNT_DELETION_BODY(),
+    });
+  }
 }
 
 export default EmailService;
