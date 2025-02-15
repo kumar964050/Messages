@@ -23,17 +23,16 @@ export const sendMsg = CatchAsync(async (req: ReqWithUser, res: Res) => {
 // get msgs
 export const getMsgs = CatchAsync(async (req: ReqWithUser, res: Res) => {
   // retrieve pattern sender --> to or to --> sender and is_delete : false
+
   const msgs = await MessageModel.find({
-    $and: [
-      {
-        $or: [
-          { from: req.body.from, to: req.body.to },
-          { from: req.body.to, to: req.body.from },
-        ],
-      },
-      { is_deleted: false },
+    $or: [
+      { from: req.body.from, to: req.body.to },
+      { from: req.body.to, to: req.body.from },
     ],
-  }).lean();
+    is_deleted: false,
+  })
+    .select("-_id -__v -updatedAt")
+    .lean();
 
   res.json({
     status: "success",
