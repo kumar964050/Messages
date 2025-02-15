@@ -4,6 +4,7 @@ import ErrorHandler from "./middlewares/ErrorHandler";
 // routes
 import authRoute from "./router/auth.route";
 import userRoute from "./router/user.route";
+import msgRoute from "./router/msg.route";
 
 const app = express();
 //middlewares
@@ -12,6 +13,7 @@ app.use(morgan("dev"));
 //  routes middleware
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+app.use("/api/msg", msgRoute);
 
 // NOT FOUND Route
 app.all("*", (req, res) => {

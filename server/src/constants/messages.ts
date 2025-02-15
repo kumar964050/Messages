@@ -97,6 +97,7 @@ export const SUCCESS_MESSAGES = {
   PASSWORD_UPDATED: "Password updated successfully.",
 
   MESSAGE_SENT: "Message sent successfully.",
+  MESSAGE_GET: "Messages get successfully.",
   MESSAGE_DELETED: "Message deleted successfully.",
 
   CHAT_CREATED: "Chat created successfully.",
