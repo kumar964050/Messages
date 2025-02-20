@@ -18,23 +18,26 @@ interface formProps {
   passwordError: string;
 }
 
-// TODO : add link
+const API_BASE = 'https://messages-ttbf.onrender.com';
+
 const Login: React.FC = () => {
   const [formData, setFormData] = useState<formProps>({
-    email: 'example@example.com',
-    password: 'Test@100',
+    email: '',
+    password: '',
     errorMsg: '',
     emailError: '',
     passwordError: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
   const navigate = useNavigation();
 
+  // handle change
   const handleChange = (key: string, value: string) => {
     setFormData(preValue => ({...preValue, [key]: value}));
   };
 
-  const handleSubmit = async () => {
+  // on submit
+  const handleSubmit = async (): Promise<void> => {
     try {
       setIsLoading(true);
 
@@ -73,7 +76,7 @@ const Login: React.FC = () => {
         passwordError: '',
         errorMsg: '',
       }));
-      const url = 'https://messages-ttbf.onrender.com/api/auth/login';
+      const url = `${API_BASE}/api/auth/login`;
       const res = await fetch(url, {
         method: 'POST',
         headers: {'COntent-Type': 'application/json'},
@@ -82,32 +85,18 @@ const Login: React.FC = () => {
       const data = await res.json();
 
       if (data.status === 'success') {
-        Toast.show({
-          type: 'success', // success | error | info
-          text1: 'Login Success',
-          text2: 'user login successfully',
-          visibilityTime: 4000,
-          position: 'top',
-        });
+        // show notification
+        Toast.show({type: 'success', text1: data.message});
         await storeData('jwt-token', data.token);
-        navigate.replace('home');
+        navigate.replace('Chat');
       } else {
         setFormData(preValue => ({
           ...preValue,
           errorMsg: data.message,
         }));
       }
-
-      // do validation
-      // api call
-      // store token in local storage , and redux store
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Failed to fetch',
-        text2: error?.message,
-        visibilityTime: 2500,
-      });
+      Toast.show({type: 'error', text1: error?.message});
     } finally {
       setIsLoading(false);
     }
@@ -119,7 +108,9 @@ const Login: React.FC = () => {
         {/* form title */}
         <View style={styles.title_container}>
           <Text style={styles.title}>Login</Text>
-          <Text style={styles.description}>Please login with your details</Text>
+          <Text style={styles.description}>
+            Please login with your credentials
+          </Text>
         </View>
         {/* email input */}
         <Input
@@ -141,18 +132,18 @@ const Login: React.FC = () => {
         />
         <View style={styles.link_container}>
           <Text style={styles.error_msg}>{formData.errorMsg}</Text>
-          <Link
-            to="forgot-password"
-            title="forgot password?"
-            style={{marginTop: 5}}
-          />
+          <Link to="Forgot-Password" type="replace" style={{marginTop: 5}}>
+            <Text>forgot password?</Text>
+          </Link>
         </View>
         {isLoading ? (
           <ActivityIndicator size={30} color="#282828" />
         ) : (
           <CustomButton handleClick={handleSubmit}>Login</CustomButton>
         )}
-        <Link to="signup" title="Create an account?" style={{marginTop: 5}} />
+        <Link to="Signup" type="replace" style={{marginTop: 5}}>
+          <Text>Create an Account?</Text>
+        </Link>
       </View>
     </View>
   );
@@ -180,6 +171,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    color: '#27AE60',
   },
   description: {
     fontSize: 14,

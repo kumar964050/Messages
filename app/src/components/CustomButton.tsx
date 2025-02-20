@@ -22,7 +22,7 @@ export default CustomButton;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: '#282828',
+    backgroundColor: '#27AE60',
     height: 42,
     justifyContent: 'center',
     alignItems: 'center',

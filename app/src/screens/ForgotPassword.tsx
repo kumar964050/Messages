@@ -15,9 +15,11 @@ interface formProps {
   emailError: string;
 }
 
+const API_BASE = `https://messages-ttbf.onrender.com`;
+
 const ForgotPassword: React.FC = () => {
   const [formData, setFormData] = useState<formProps>({
-    email: 'example@example.com',
+    email: '',
     errorMsg: '',
     emailError: '',
   });
@@ -42,7 +44,7 @@ const ForgotPassword: React.FC = () => {
         ...preValue,
         errorMsg: '',
       }));
-      const url = 'https://messages-ttbf.onrender.com/api/auth/forgot-password';
+      const url = `${API_BASE}/api/auth/forgot-password`;
       const res = await fetch(url, {
         method: 'POST',
         headers: {'COntent-Type': 'application/json'},
@@ -51,31 +53,16 @@ const ForgotPassword: React.FC = () => {
       const data = await res.json();
 
       if (data.status === 'success') {
-        Toast.show({
-          type: 'success', // success | error | info
-          text1: 'Forgot Password Request success',
-          text2: data.message,
-          visibilityTime: 4000,
-          position: 'top',
-        });
-        navigate.replace('login');
+        Toast.show({type: 'success', text1: data.message});
+        navigate.replace('Login');
       } else {
         setFormData(preValue => ({
           ...preValue,
           errorMsg: data.message,
         }));
       }
-
-      // do validation
-      // api call
-      // store token in local storage , and redux store
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Failed to fetch',
-        text2: error?.message,
-        visibilityTime: 2500,
-      });
+      Toast.show({type: 'error', text1: error?.message});
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +74,9 @@ const ForgotPassword: React.FC = () => {
         {/* form title */}
         <View style={styles.title_container}>
           <Text style={styles.title}>Forgot Password?</Text>
-          <Text style={styles.description}>Please use your credentials</Text>
+          <Text style={styles.description}>
+            Please use your email or username
+          </Text>
         </View>
         {/* email input */}
         <Input
@@ -109,7 +98,9 @@ const ForgotPassword: React.FC = () => {
             Forgot Password
           </CustomButton>
         )}
-        <Link to="login" title="Back to Login?" style={{marginTop: 5}} />
+        <Link to="Login" type="replace" style={{marginTop: 5}}>
+          <Text>Back to login?</Text>
+        </Link>
       </View>
     </View>
   );
@@ -137,6 +128,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    color: '#27AE60',
   },
   description: {
     fontSize: 14,

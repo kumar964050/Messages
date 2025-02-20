@@ -2,13 +2,14 @@ import {StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
 
 interface InputProps {
-  label: string;
+  label?: string;
   type: any;
   placeholder: string;
   value: any;
-  //   rest: any;
   handleChange: (value: string) => void;
-  errorMsg: string;
+  errorMsg?: string;
+  style?: any;
+  //   rest: any;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -18,6 +19,7 @@ const Input: React.FC<InputProps> = ({
   value,
   handleChange,
   errorMsg,
+  style,
 }) => {
   const isSecureField = type === 'password' ? true : false;
   return (
@@ -25,7 +27,7 @@ const Input: React.FC<InputProps> = ({
       <Text style={styles.label}>{label}</Text>
       <TextInput
         keyboardType={type}
-        style={styles.input}
+        style={[styles.input, style]}
         value={value}
         onChangeText={(text: string) => handleChange(text)}
         placeholder={placeholder}

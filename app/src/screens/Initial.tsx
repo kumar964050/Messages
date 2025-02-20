@@ -4,22 +4,21 @@ import {useNavigation} from '@react-navigation/native';
 import {getData} from '../utils/storage';
 
 const Initial = () => {
-  const navigation = useNavigation();
+  const navigate = useNavigation();
 
   useEffect(() => {
     (async () => {
       const token = await getData('jwt-token');
       if (token) {
-        navigation.replace('home'); // Move to Home if token exists
+        navigate.replace('Chat');
       } else {
-        console.log('Move to login');
-        navigation.replace('login'); // Move to Login if no token
+        navigate.replace('Login');
       }
     })();
   }, []);
   return (
     <View style={styles.screen_container}>
-      <ActivityIndicator size={42} color="#66abcf" />
+      <ActivityIndicator size={42} color="#27AE60" />
     </View>
   );
 };

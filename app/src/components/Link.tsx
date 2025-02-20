@@ -1,23 +1,36 @@
 import React from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 interface LinkProps {
   to: any;
-  title: string;
-  style?: any;
+  type?: 'navigate' | 'push' | 'replace';
+  children: React.ReactNode;
+  style?: object;
 }
 
-const Link: React.FC<LinkProps> = ({to, title, style}) => {
+const Link: React.FC<LinkProps> = ({to, type, children, style}) => {
   const navigation = useNavigation();
 
+  const handleClick = () => {
+    if (type === 'push') {
+      navigation.push(to);
+    } else if (type === 'replace') {
+      navigation.replace(to);
+    } else {
+      navigation.navigate(to);
+    }
+  };
+
   return (
-    <TouchableOpacity onPress={() => navigation.navigate(to)}>
-      <Text style={[{fontSize: 12, textDecorationLine: 'underline'}, style]}>
-        {title}
-      </Text>
+    <TouchableOpacity onPress={handleClick} style={[styles.link, style]}>
+      {children}
     </TouchableOpacity>
   );
 };
 
 export default Link;
+
+const styles = StyleSheet.create({
+  link: {},
+});
