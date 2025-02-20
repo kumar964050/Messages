@@ -20,20 +20,20 @@ interface formProps {
 
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState<formProps>({
-    email: 'example@example.com',
-    password: 'Test@100',
+    email: '',
+    password: '',
     errorMsg: '',
     emailError: '',
     passwordError: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
   const navigate = useNavigation();
 
   const handleChange = (key: string, value: string) => {
     setFormData(preValue => ({...preValue, [key]: value}));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     try {
       setIsLoading(true);
 
@@ -81,32 +81,17 @@ const SignUp: React.FC = () => {
       const data = await res.json();
 
       if (data.status === 'success') {
-        Toast.show({
-          type: 'success', // success | error | info
-          text1: 'Signup Success',
-          text2: data.message,
-          visibilityTime: 5000,
-          position: 'top',
-        });
+        Toast.show({type: 'success', text1: data.message});
         await storeData('jwt-token', data.token);
-        navigate.replace('home');
+        navigate.replace('Update-Details');
       } else {
         setFormData(preValue => ({
           ...preValue,
           errorMsg: data.message,
         }));
       }
-
-      // do validation
-      // api call
-      // store token in local storage , and redux store
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Failed to fetch',
-        text2: error?.message,
-        visibilityTime: 2500,
-      });
+      Toast.show({type: 'error', text1: error?.message});
     } finally {
       setIsLoading(false);
     }
@@ -117,16 +102,18 @@ const SignUp: React.FC = () => {
       <View style={styles.form_container}>
         {/* form title */}
         <View style={styles.title_container}>
-          <Text style={styles.title}>Login</Text>
-          <Text style={styles.description}>Please login with your details</Text>
+          <Text style={styles.title}>Signup</Text>
+          <Text style={styles.description}>
+            Please Signup with your details
+          </Text>
         </View>
         {/* email input */}
         <Input
           type="email-address"
           value={formData.email}
           handleChange={v => handleChange('email', v)}
-          label="Please enter your Email or Username"
-          placeholder="Email or Username"
+          label="Please enter your Email"
+          placeholder="Email address"
           errorMsg={formData.emailError}
         />
         {/* password input */}
@@ -134,24 +121,21 @@ const SignUp: React.FC = () => {
           type="password"
           value={formData.password}
           handleChange={v => handleChange('password', v)}
-          label="Please enter your Password"
+          label="Please enter a Password"
           placeholder="Password"
           errorMsg={formData.passwordError}
         />
         <View style={styles.link_container}>
           <Text style={styles.error_msg}>{formData.errorMsg}</Text>
-          <Link
-            to="forgot-password"
-            title="forgot password?"
-            style={{marginTop: 5}}
-          />
         </View>
         {isLoading ? (
           <ActivityIndicator size={30} color="#282828" />
         ) : (
-          <CustomButton handleClick={handleSubmit}>Login</CustomButton>
+          <CustomButton handleClick={handleSubmit}>Signup</CustomButton>
         )}
-        <Link to="signup" title="Create an account?" style={{marginTop: 5}} />
+        <Link to="Login" type="replace" style={{marginTop: 5}}>
+          <Text>Already have an account?</Text>
+        </Link>
       </View>
     </View>
   );
@@ -179,6 +163,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    color: '#27AE60',
   },
   description: {
     fontSize: 14,
