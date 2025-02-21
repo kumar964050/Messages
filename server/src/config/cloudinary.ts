@@ -7,7 +7,7 @@ cloudinary.config({
 });
 
 export const uploadImage = async (imgFile: any, folderName: string) => {
-  const dirName = `${process.env.PROJECT_NAME}/${folderName}`;
+  const dirName = `messages/${folderName}`;
   const result = await cloudinary.uploader.upload(imgFile.tempFilePath, {
     folder: dirName,
   });
