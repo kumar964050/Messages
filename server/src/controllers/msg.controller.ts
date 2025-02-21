@@ -14,7 +14,7 @@ interface ReqWithUser extends Req {
 
 // send msg
 export const sendMsg = CatchAsync(async (req: ReqWithUser, res: Res) => {
-  const newMsg = await MessageModel.create(req.body);
+  const newMsg = await MessageModel.create({ ...req.body, status: "sent" });
   res.json({
     status: "success",
     message: SUCCESS_MESSAGES.MESSAGE_SENT,
