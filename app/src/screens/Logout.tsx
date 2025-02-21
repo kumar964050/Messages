@@ -1,17 +1,15 @@
 import {StyleSheet, View, ActivityIndicator} from 'react-native';
 import React, {useEffect} from 'react';
-import {removeAll} from '../utils/storage';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, CommonActions} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import {useAuth} from '../hooks/useAuth';
 
-const UserDetails = () => {
+const Logout = () => {
   const navigate = useNavigation();
+  const {handleLogout} = useAuth();
+
   useEffect(() => {
-    (async () => {
-      await removeAll();
-      Toast.show({type: 'success', text1: 'Logout Successfully'});
-      navigate.replace('Login');
-    })();
+    handleLogout();
   }, []);
   return (
     <View style={styles.container}>
@@ -20,7 +18,7 @@ const UserDetails = () => {
   );
 };
 
-export default UserDetails;
+export default Logout;
 
 const styles = StyleSheet.create({
   container: {

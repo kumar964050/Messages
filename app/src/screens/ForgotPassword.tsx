@@ -7,6 +7,7 @@ import Input from '../components/Input';
 import CustomButton from '../components/CustomButton';
 import Toast from 'react-native-toast-message';
 import Link from '../components/Link';
+import API_BASE from '../utils/api_base';
 //
 
 interface formProps {
@@ -14,8 +15,6 @@ interface formProps {
   errorMsg: string;
   emailError: string;
 }
-
-const API_BASE = `https://messages-ttbf.onrender.com`;
 
 const ForgotPassword: React.FC = () => {
   const [formData, setFormData] = useState<formProps>({

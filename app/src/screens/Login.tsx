@@ -9,6 +9,8 @@ import Toast from 'react-native-toast-message';
 import Link from '../components/Link';
 //
 import {storeData} from '../utils/storage';
+import API_BASE from '../utils/api_base';
+import {useAuth} from '../hooks/useAuth';
 
 interface formProps {
   email: string;
@@ -18,18 +20,18 @@ interface formProps {
   passwordError: string;
 }
 
-const API_BASE = 'https://messages-ttbf.onrender.com';
-
+// todo : toggle password
 const Login: React.FC = () => {
   const [formData, setFormData] = useState<formProps>({
-    email: '',
-    password: '',
+    email: 'example@example.com',
+    password: 'Test@100',
     errorMsg: '',
     emailError: '',
     passwordError: '',
   });
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const navigate = useNavigation();
+  const {handleLogin} = useAuth();
 
   // handle change
   const handleChange = (key: string, value: string) => {
@@ -88,7 +90,7 @@ const Login: React.FC = () => {
         // show notification
         Toast.show({type: 'success', text1: data.message});
         await storeData('jwt-token', data.token);
-        navigate.replace('Chat');
+        handleLogin(data.data.user);
       } else {
         setFormData(preValue => ({
           ...preValue,
@@ -133,7 +135,7 @@ const Login: React.FC = () => {
         <View style={styles.link_container}>
           <Text style={styles.error_msg}>{formData.errorMsg}</Text>
           <Link to="Forgot-Password" type="replace" style={{marginTop: 5}}>
-            <Text>forgot password?</Text>
+            <Text>Forgot password?</Text>
           </Link>
         </View>
         {isLoading ? (

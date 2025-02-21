@@ -9,6 +9,8 @@ import Toast from 'react-native-toast-message';
 import Link from '../components/Link';
 //
 import {storeData} from '../utils/storage';
+import API_BASE from '../utils/api_base';
+import {useAuth} from '../hooks/useAuth';
 
 interface formProps {
   email: string;
@@ -18,6 +20,7 @@ interface formProps {
   passwordError: string;
 }
 
+//todo : toggle password
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState<formProps>({
     email: '',
@@ -28,6 +31,7 @@ const SignUp: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const navigate = useNavigation();
+  const {handleLogin} = useAuth();
 
   const handleChange = (key: string, value: string) => {
     setFormData(preValue => ({...preValue, [key]: value}));
@@ -72,7 +76,7 @@ const SignUp: React.FC = () => {
         passwordError: '',
         errorMsg: '',
       }));
-      const url = 'https://messages-ttbf.onrender.com/api/auth/signup';
+      const url = `${API_BASE}/api/auth/signup`;
       const res = await fetch(url, {
         method: 'POST',
         headers: {'COntent-Type': 'application/json'},
@@ -83,7 +87,7 @@ const SignUp: React.FC = () => {
       if (data.status === 'success') {
         Toast.show({type: 'success', text1: data.message});
         await storeData('jwt-token', data.token);
-        navigate.replace('Update-Details');
+        handleLogin(data.data.user);
       } else {
         setFormData(preValue => ({
           ...preValue,
