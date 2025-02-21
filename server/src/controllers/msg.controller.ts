@@ -75,6 +75,7 @@ export const uploadFile = CatchAsync(
     const newMsg = await MessageModel.create({
       msg_id: uuidV4(),
       type: "image",
+      content: "image",
       image,
       from: req.user?._id,
       to: req.body.to,
