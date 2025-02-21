@@ -111,13 +111,21 @@ export const forgotPassword = CatchAsync(
   }
 );
 
-// // set temp password for login
-// export const AccountVerification = CatchAsync(
+//
+// export const reqAccountVerifyLink = CatchAsync(
 //   async (req: Req, res: Res, next: Next) => {
-//     // extract id from token
-//     // get details by id
-//     // change the status of is_verified
-//     // send res
-//     // res.json({ status: "success", message:  });
+//     // extract id from body
+//     // get details
+//     // send email to user
+//   }
+// );
+// //
+// export const verifyAccountVerifyLink = CatchAsync(
+//   async (req: Req, res: Res, next: Next) => {
+//     // extract id from params
+//     // get details
+//     // change status
+//     // send email to user
+//     // send user data
 //   }
 // );

@@ -40,6 +40,7 @@ export const getProfile = CatchAsync(
   }
 );
 
+// update password
 export const updatePassword = CatchAsync(
   async (req: ReqWithUser, res: Res, next: Next) => {
     //
@@ -104,7 +105,7 @@ export const updateDetails = CatchAsync(
   }
 );
 
-//  delete my account :review
+//  delete my account
 export const deleteMyAccount = CatchAsync(
   async (req: ReqWithUser, res: Res, next: Next) => {
     // const user = await UserModel.findById(req.params.id);

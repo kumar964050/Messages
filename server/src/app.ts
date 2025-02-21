@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import fileUpload from "express-fileupload";
 import ErrorHandler from "./middlewares/ErrorHandler";
 // routes
 import authRoute from "./router/auth.route";
@@ -10,6 +11,13 @@ const app = express();
 //middlewares
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
+
 //  routes middleware
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);

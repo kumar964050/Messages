@@ -5,6 +5,8 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../constants/messages";
 
 import UserModel, { IUser } from "../models/user.model";
 import MessageModel from "../models/message.model";
+import { uploadImage } from "../config/cloudinary";
+import { v4 as uuidV4 } from "uuid";
 
 interface ReqWithUser extends Req {
   user?: IUser | undefined;
@@ -66,11 +68,22 @@ export const deleteMsg = CatchAsync(
 );
 
 // send msg
-export const uploadFiles = CatchAsync(async (req: ReqWithUser, res: Res) => {
-  //
-  // res.json({
-  // status: "success",
-  // message: SUCCESS_MESSAGES.MESSAGE_SENT,
-  // data: { message: newMsg },
-  // });
-});
+export const uploadFile = CatchAsync(
+  async (req: ReqWithUser, res: Res, next: Next) => {
+    if (!req.files) return next(new CustomError("File is required.", 400));
+    let image = await uploadImage(req.files.image, "/messages");
+    const newMsg = await MessageModel.create({
+      msg_id: uuidV4(),
+      type: "image",
+      image,
+      from: req.user?._id,
+      to: req.body.to,
+      status: "sent",
+    });
+    res.json({
+      status: "success",
+      message: SUCCESS_MESSAGES.MESSAGE_SENT,
+      data: { message: newMsg },
+    });
+  }
+);
