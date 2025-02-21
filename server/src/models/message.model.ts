@@ -7,6 +7,7 @@ interface IMessage extends Document {
   msg_id: string;
   type: string;
   content: string;
+  image: { id: String; url: String };
   from: Types.ObjectId;
   to: Types.ObjectId;
   status: string;
@@ -22,6 +23,7 @@ const messageSchema = new Schema<IMessage>(
     type: { type: String, required: true, enum: MSG_TYPE },
     content: { type: String, required: true, trim: true },
     from: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    image: { type: { id: String, url: String } },
     to: { type: Schema.Types.ObjectId, ref: "User", required: true },
     status: { type: String, required: true, enum: MSG_STATUS },
     is_deleted: { type: Boolean, default: false },
